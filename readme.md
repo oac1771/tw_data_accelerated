@@ -1,0 +1,1 @@
+location of spark scripts:  /opt/homebrew/Cellar/apache-spark/3.3.1/libexec/sbin

@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "spark-training"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+packages = [{include = "spark_training"}]
+
+[tool.poetry.dependencies]
+python = "~3.8"
+invoke = "~1.7.3"
+pyspark = "~3.3.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
