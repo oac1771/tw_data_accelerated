@@ -1,0 +1,2 @@
+for build create temp dir to copy script files into and build inside that temp dir
+explore docker compose to start spark cluster
