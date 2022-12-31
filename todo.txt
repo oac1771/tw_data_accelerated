@@ -1,2 +1,3 @@
 for build create temp dir to copy script files into and build inside that temp dir
+    - if this doesnt work, install it in temp directory and copy over to dockerfile
 explore docker compose to start spark cluster
