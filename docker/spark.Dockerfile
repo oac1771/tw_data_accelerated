@@ -1,5 +1,6 @@
 FROM openjdk:11
 
 COPY libexec/ libexec/
+COPY entrypoint.sh entrypoint.sh
 
-CMD ["java", "Main"]
+ENTRYPOINT ["sh"]
