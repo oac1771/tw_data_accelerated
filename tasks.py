@@ -1,4 +1,5 @@
 import tempfile
+import shutil
 from invoke import task
 
 PATH_TO_SPARK_DEPENDENCIES = "/opt/homebrew/Cellar/apache-spark/3.3.1/libexec/"
@@ -10,13 +11,11 @@ def start_local(_):
 
 @task
 def build_docker(ctx):
-    # copy dockerfile into temp_dir
-    # copy spark dependencies into temp_dir
-    # build docker with those spark dependencies
-    # use ctx.cd thing into temp_dir
 
     with tempfile.TemporaryDirectory() as temp_dir:
-        print('created temporary directory', temp_dir)
-
-    # ctx.run("docker build -f docker/spark.Dockerfile . -t spark:latest")
+        shutil.copytree(src=PATH_TO_SPARK_DEPENDENCIES, dst=f"{temp_dir}/libexec")
+        shutil.copytree(src="docker/", dst=f"{temp_dir}/docker")
+        
+        with ctx.cd(temp_dir):
+            ctx.run("docker build -f docker/spark.Dockerfile . -t spark:latest")
 
