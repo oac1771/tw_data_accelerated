@@ -23,6 +23,19 @@ services:
     depends_on:
       - master
 
+  proxy:
+    container_name: proxy
+    image: "proxy:latest"
+    command: ../entrypoint.sh
+    working_dir: /spark_training/
+    volumes:
+      - ../.:/spark_training/
+    networks:
+      - spark-net
+    depends_on:
+      - master
+      - worker
+
 networks:
   spark-net:
     driver: bridge
