@@ -6,11 +6,13 @@ PATH_TO_SPARK_DEPENDENCIES = "/opt/homebrew/Cellar/apache-spark/3.3.1/libexec/"
 
 @task
 def start_local(ctx):
-    ctx.run("docker network create --driver bridge spark-net-bridge", hide=True)
-    stdout = ctx.run(f"docker run --name master -d -p 8080:8080 -p 7077:7077 --network spark-net-bridge spark:latest entrypoint.sh start-master.sh", hide=True).stdout
-    container_id = stdout[0:12]
+    with ctx.cd("docker"):
+        ctx.run("docker compose up -d")
 
-    ctx.run(f"docker run --name worker -d -p 8081:8081 --network spark-net-bridge spark:latest entrypoint.sh start-worker.sh spark://{container_id}:7077", hide=True)
+@task
+def stop_local(ctx):
+    with ctx.cd("docker"):
+        ctx.run("docker compose down")
 
 
 @task
