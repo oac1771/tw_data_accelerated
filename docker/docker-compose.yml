@@ -16,6 +16,8 @@ services:
     container_name: worker
     image: "spark:latest"
     command: entrypoint.sh start-worker.sh spark://172.20.0.10:7077
+    volumes:
+      - ../.:/spark_training/
     ports:
       - "8081:8081"
     networks:

@@ -7,14 +7,11 @@ PATH_TO_SPARK_DEPENDENCIES = "/opt/homebrew/Cellar/apache-spark/3.3.1/libexec/"
 @task
 def foo(_):
     from pyspark.sql import SparkSession
-    # from pyspark import SparkConf
     spark = SparkSession.builder.master("spark://172.20.0.10:7077").getOrCreate()
-    # sparkConf = SparkConf()
-    # sparkConf.setMaster("spark://172.20.0.10:7077")
-    # spark = SparkSession.builder.config(conf=sparkConf).getOrCreate()
+    df = spark.read.format('csv').option('header',True).load('data/temp_vs_co2/EmissionsByCountry.csv')
 
-    df = spark.read.csv("data/temp_vs_co2/EmissionsByCountry.csv")
     df.printSchema()
+    df.show(3, vertical=True)
 
 @task
 def start_local(ctx):
