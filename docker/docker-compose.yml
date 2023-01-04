@@ -17,7 +17,7 @@ services:
     image: "spark:latest"
     command: entrypoint.sh start-worker.sh spark://172.20.0.10:7077
     volumes:
-      - ../data/:/spark_training/data/
+      - ../data/:/scripts/data/
     ports:
       - "8081:8081"
     networks:
@@ -29,9 +29,10 @@ services:
     container_name: proxy
     image: "proxy:latest"
     command: ../entrypoint.sh
-    working_dir: /spark_training/
+    working_dir: /scripts
     volumes:
-      - ../.:/spark_training/
+      - ../scripts:/scripts
+      - ../data/:/scripts/data/
     networks:
       - spark-net
     depends_on:
