@@ -1,7 +1,4 @@
-from invoke import task
-
-@task
-def foo(_):
+if __name__ == "__main__":
     from pyspark.sql import SparkSession
     from pyspark.sql.types import FloatType
     from pyspark.sql.functions import col, when
