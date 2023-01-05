@@ -30,7 +30,7 @@ def docker_build(ctx):
 
         with ctx.cd(f"{temp_dir}/docker"):
             ctx.run("docker build -f spark.Dockerfile . -t spark:latest")
-            ctx.run("docker build -f proxy.Dockerfile . -t proxy:latest --no-cache")
+            ctx.run("docker build -f proxy.Dockerfile . -t proxy:latest")
 
 
 def render_compose(number_of_workers):
