@@ -2,4 +2,4 @@ todo.txt
 .vscode/
 spark_training/data/temp_vs_co2/*
 docker-compose.yml
-kafka_training/docker/kafka_2.13-3.3.1/site-docs/
+kafka_training/docker/kafka_2.13-3.3.1/
