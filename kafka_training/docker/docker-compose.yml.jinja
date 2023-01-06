@@ -7,7 +7,22 @@ services:
       - "9092:9092"
     networks:
       - kafka-net
-
+  producer:
+    container_name: producer
+    image: "proxy-kafka:latest"
+    command: ../entrypoint.sh
+    volumes:
+      - ../scripts:/scripts
+    networks:
+      - kafka-net
+  consumer:
+    container_name: consumer
+    image: "proxy-kafka:latest"
+    command: ../entrypoint.sh
+    volumes:
+      - ../scripts:/scripts
+    networks:
+      - kafka-net
 networks:
   kafka-net:
     driver: bridge

@@ -4,6 +4,10 @@ import shutil
 from invoke import task
 from jinja2 import Environment, FileSystemLoader
 
+from kafka import KafkaProducer, KafkaConsumer
+from datetime import datetime
+import time
+
 TOPIC = "topic"
 
 @task
@@ -12,6 +16,7 @@ def start_local(ctx):
 
     with open("docker/docker-compose.yml", mode="w+", encoding="utf-8") as f:
         f.write(rendered_compose)
+
     ctx.run("docker compose -f docker/docker-compose.yml up -d")
 
 @task
@@ -24,12 +29,12 @@ def docker_build(ctx):
 
     with tempfile.TemporaryDirectory() as temp_dir:
         shutil.copytree(src="docker/", dst=f"{temp_dir}/docker")
-
-        # shutil.copy(src="scripts/pyproject.toml", dst=f"{temp_dir}/docker/pyproject.toml")
+        shutil.copytree(src="scripts/", dst=f"{temp_dir}/docker/scripts")
 
         with ctx.cd(f"{temp_dir}/docker"):
-            ctx.run("docker build -f kafka.Dockerfile . -t kafka:latest --no-cache")
-            # ctx.run("docker build -f proxy.Dockerfile . -t proxy:latest")
+            ctx.run("docker build -f kafka_broker.Dockerfile . -t kafka:latest")
+            ctx.run("docker build -f proxy.Dockerfile . -t proxy-kafka:latest")
+
 
 
 def render_compose():
@@ -52,10 +57,6 @@ def create_topic(_, topic_name=TOPIC, num_partitions=1, replication_factor=1):
 
 @task
 def produce(_):
-    from kafka import KafkaProducer
-    from datetime import datetime
-    import time
-
     producer = KafkaProducer(bootstrap_servers="localhost:9092")
 
     while True:
@@ -66,8 +67,6 @@ def produce(_):
 
 @task
 def consume(_):
-    from kafka import KafkaConsumer
-
     consumer = KafkaConsumer(TOPIC, bootstrap_servers="localhost:9092")
     print("Starting Consume Process")
 

@@ -1,7 +1,7 @@
 FROM openjdk:11
 
+COPY scripts/ scripts/
 COPY proxy-entrypoint.sh entrypoint.sh
-COPY pyproject.toml scripts/pyproject.toml
 
 WORKDIR scripts/
 
