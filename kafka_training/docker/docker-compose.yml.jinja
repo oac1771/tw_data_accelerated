@@ -1,0 +1,19 @@
+services:
+  broker:
+    container_name: broker
+    image: "kafka:latest"
+    command: entrypoint.sh
+    networks:
+      - kafka-net
+
+  proxy:
+    container_name: proxy
+    image: "proxy:latest"
+    command: ../entrypoint.sh
+    working_dir: /scripts
+    networks:
+      - kafka-net
+
+networks:
+  kafka-net:
+    driver: bridge
