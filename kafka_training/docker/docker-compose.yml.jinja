@@ -3,8 +3,6 @@ services:
     container_name: broker
     image: "kafka:latest"
     command: entrypoint.sh
-    ports:
-      - "9092:9092"
     networks:
       - kafka-net
   producer:
