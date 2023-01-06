@@ -3,14 +3,8 @@ services:
     container_name: broker
     image: "kafka:latest"
     command: entrypoint.sh
-    networks:
-      - kafka-net
-
-  proxy:
-    container_name: proxy
-    image: "proxy:latest"
-    command: ../entrypoint.sh
-    working_dir: /scripts
+    ports:
+      - "9092:9092"
     networks:
       - kafka-net
 
