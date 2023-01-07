@@ -8,7 +8,7 @@ BOOTSTRAP_SERVER = "broker:9092"
 
 @task
 def produce(_):
-    producer = KafkaProducer(bootstrap_servers=BOOTSTRAP_SERVER)
+    producer = KafkaProducer(bootstrap_servers="localhost:9092")
 
     while True:
         print("Sending data...")
@@ -18,7 +18,7 @@ def produce(_):
 
 @task
 def consume(_):
-    consumer = KafkaConsumer(TOPIC, bootstrap_servers=BOOTSTRAP_SERVER)
+    consumer = KafkaConsumer(TOPIC, bootstrap_servers="localhost:9092")
     print("Starting Consume Process")
 
     for message in consumer:
@@ -36,3 +36,21 @@ def create_topic(_, topic_name=TOPIC, num_partitions=1, replication_factor=1):
     print(f"Creating new topic: {topic_name}")
     new_topic = [NewTopic(name="test", num_partitions=num_partitions, replication_factor=replication_factor)]
     admin_client.create_topics(new_topics=new_topic, validate_only=False)
+
+@task
+def start_structured_stream(_):
+    from pyspark.sql import SparkSession
+    from pyspark.sql.functions import col
+    from pyspark.sql.types import StringType
+
+
+    spark = SparkSession.builder.master("spark://omars-mbp-2.lan:7077") \
+        .config("spark.jars.packages", "org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.1") \
+        .appName("Stream Processer").getOrCreate()
+
+
+    df = spark.readStream.format("kafka").option("kafka.bootstrap.servers", "localhost:9092") \
+        .option("subscribe", TOPIC).load()
+    
+    df = df.select(col("key").cast(StringType()).alias("key"), col("value").cast(StringType()).alias("value"), col("partition"))
+    df.printSchema()

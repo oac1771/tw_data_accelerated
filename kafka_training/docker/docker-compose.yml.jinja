@@ -3,6 +3,8 @@ services:
     container_name: broker
     image: "kafka:latest"
     command: entrypoint.sh
+    ports:
+      - "9092:9092"
     networks:
       - kafka-net
   producer:
@@ -21,6 +23,47 @@ services:
       - ../scripts:/scripts
     networks:
       - kafka-net
+  master:
+    container_name: master
+    image: "spark:latest"
+    command: entrypoint.sh start-master.sh
+    environment:
+      SPARK_MASTER_HOST: 172.20.0.10
+    ports:
+      - "8080:8080"
+    networks:
+      kafka-net:
+        ipv4_address: 172.20.0.10
+
+  worker:
+    container_name: worker
+    image: "spark:latest"
+    command: entrypoint.sh start-worker.sh spark://172.20.0.10:7077
+    environment:
+      SPARK_WORKER_WEBUI_PORT: 8081
+    ports:
+      - "8081:8081"
+    networks:
+      - kafka-net
+    depends_on:
+      - master
+
+  proxy-spark:
+    container_name: proxy-spark
+    image: "proxy-kafka:latest"
+    command: ../entrypoint.sh
+    working_dir: /scripts
+    volumes:
+      - ../scripts:/scripts
+    networks:
+      - kafka-net
+    depends_on:
+      - master
+      - worker
+
 networks:
   kafka-net:
     driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

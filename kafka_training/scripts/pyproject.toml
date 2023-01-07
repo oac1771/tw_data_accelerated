@@ -8,6 +8,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "~3.9"
 invoke = "~1.7"
+pyspark = "~3.3"
 kafka-python = "^2.0.2"
 
 [build-system]

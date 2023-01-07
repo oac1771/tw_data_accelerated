@@ -4,12 +4,6 @@ import shutil
 from invoke import task
 from jinja2 import Environment, FileSystemLoader
 
-from kafka import KafkaProducer, KafkaConsumer
-from datetime import datetime
-import time
-
-TOPIC = "topic"
-
 @task
 def start_local(ctx):
     rendered_compose = render_compose()
@@ -43,34 +37,3 @@ def render_compose():
 
     f = template.render()
     return f
-
-@task
-def create_topic(_, topic_name=TOPIC, num_partitions=1, replication_factor=1):
-    from kafka.admin import KafkaAdminClient, NewTopic
-    
-    admin_client = KafkaAdminClient(
-        bootstrap_servers="localhost:9092", 
-    )
-    print(f"Creating new topic: {topic_name}")
-    new_topic = [NewTopic(name=topic_name, num_partitions=num_partitions, replication_factor=replication_factor)]
-    admin_client.create_topics(new_topics=new_topic, validate_only=False)
-
-@task
-def produce(_):
-    producer = KafkaProducer(bootstrap_servers="localhost:9092")
-
-    while True:
-        print("Sending data...")
-        producer.send(topic=TOPIC, value=f"{datetime.now()}".encode())
-        time.sleep(2)
-
-
-@task
-def consume(_):
-    consumer = KafkaConsumer(TOPIC, bootstrap_servers="localhost:9092")
-    print("Starting Consume Process")
-
-    for message in consumer:
-        print(f"message: {message}")
-
-    print("done")
