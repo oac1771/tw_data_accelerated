@@ -8,7 +8,7 @@ BOOTSTRAP_SERVER = "broker:9092"
 
 @task
 def produce(_):
-    producer = KafkaProducer(bootstrap_servers="localhost:9092")
+    producer = KafkaProducer(bootstrap_servers=BOOTSTRAP_SERVER)
 
     while True:
         print("Sending data...")
@@ -18,7 +18,7 @@ def produce(_):
 
 @task
 def consume(_):
-    consumer = KafkaConsumer(TOPIC, bootstrap_servers="localhost:9092")
+    consumer = KafkaConsumer(TOPIC, bootstrap_servers=BOOTSTRAP_SERVER)
     print("Starting Consume Process")
 
     for message in consumer:
@@ -44,12 +44,12 @@ def start_structured_stream(_):
     from pyspark.sql.types import StringType
 
 
-    spark = SparkSession.builder.master("spark://omars-mbp-2.lan:7077") \
+    spark = SparkSession.builder.master("spark://172.20.0.10:7077") \
         .config("spark.jars.packages", "org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.1") \
         .appName("Stream Processer").getOrCreate()
 
 
-    df = spark.readStream.format("kafka").option("kafka.bootstrap.servers", "localhost:9092") \
+    df = spark.readStream.format("kafka").option("kafka.bootstrap.servers", BOOTSTRAP_SERVER) \
         .option("subscribe", TOPIC).load()
     
     df = df.select(col("key").cast(StringType()).alias("key"), col("value").cast(StringType()).alias("value"), col("partition"))
