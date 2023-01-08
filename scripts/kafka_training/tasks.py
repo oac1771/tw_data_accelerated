@@ -4,7 +4,7 @@ from datetime import datetime
 import time
 
 TOPIC = "topic"
-BOOTSTRAP_SERVER = "broker:9092"
+BOOTSTRAP_SERVER = "kafka-broker:9092"
 
 @task
 def produce(_):
@@ -37,24 +37,3 @@ def create_topic(_, topic_name=TOPIC, num_partitions=1, replication_factor=1):
     new_topic = [NewTopic(name="test", num_partitions=num_partitions, replication_factor=replication_factor)]
     admin_client.create_topics(new_topics=new_topic, validate_only=False)
 
-@task
-def start_structured_stream(_):
-    from pyspark.sql import SparkSession
-    from pyspark.sql.functions import col
-    from pyspark.sql.types import StringType
-
-
-    spark = SparkSession.builder.master("spark://172.20.0.10:7077") \
-        .config("spark.jars.packages", "org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.1") \
-        .appName("Stream Processer").getOrCreate()
-
-
-    df = spark.readStream.format("kafka").option("kafka.bootstrap.servers", BOOTSTRAP_SERVER) \
-        .option("subscribe", TOPIC).load()
-    
-    df = df.select(col("key").cast(StringType()).alias("key"), col("value").cast(StringType()).alias("value"), col("partition"))
-
-    df = df.groupBy("partition").count()
-    df = df.writeStream.outputMode("complete").option("checkpointLocation", "checkpoint/").format("console").start()
-
-    df.awaitTermination()

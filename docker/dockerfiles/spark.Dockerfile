@@ -1,6 +1,6 @@
 FROM openjdk:11
 
 COPY libexec/ libexec/
-COPY entrypoint.sh entrypoint.sh
+COPY spark_entrypoint.sh entrypoint.sh
 
 ENTRYPOINT ["sh"]

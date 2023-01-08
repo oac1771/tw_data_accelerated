@@ -1,5 +1,6 @@
 todo.txt
 .vscode/
-spark_training/data/temp_vs_co2/*
+scripts/spark_training/data/temp_vs_co2/*
+scripts/spark_training/checkpoint
 docker-compose.yml
-kafka_training/docker/kafka_2.13-3.3.1/
+docker/kafka_2.13-3.3.1/

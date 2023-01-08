@@ -1,9 +1,7 @@
 FROM openjdk:11
 
-COPY scripts/ scripts/
-COPY proxy-entrypoint.sh entrypoint.sh
-
-WORKDIR scripts/
+COPY proxy_entrypoint.sh entrypoint.sh
+COPY pyproject.toml pyproject.toml
 
 RUN apt-get update && apt-get install python3-pip -y
 RUN pip install poetry

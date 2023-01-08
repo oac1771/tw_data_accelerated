@@ -1,0 +1,75 @@
+services:
+  kafka-broker:
+    container_name: kafka-broker
+    image: "kafka:latest"
+    command: entrypoint.sh
+    ports:
+      - "9092:9092"
+    networks:
+      - kafka-net
+  kafka-producer:
+    container_name: kafka-producer
+    image: "proxy:latest"
+    command: ../../entrypoint.sh
+    working_dir: /scripts/kafka_training
+    volumes:
+      - ../scripts/kafka_training:/scripts/kafka_training
+    networks:
+      - kafka-net
+  kafka-consumer:
+    container_name: kafka-consumer
+    image: "proxy:latest"
+    command: ../../entrypoint.sh
+    working_dir: /scripts/kafka_training
+    volumes:
+      - ../scripts/kafka_training:/scripts/kafka_training
+    networks:
+      - kafka-net
+  spark-master:
+    container_name: spark-master
+    image: "spark:latest"
+    command: entrypoint.sh start-master.sh
+    environment:
+      SPARK_MASTER_HOST: 172.20.0.10
+    ports:
+      - "8080:8080"
+    networks:
+      kafka-net:
+        ipv4_address: 172.20.0.10
+  {% for i in range(number_of_workers) %}
+  spark-worker-{{ i }}:
+    container_name: spark-worker-{{ i }}
+    image: "spark:latest"
+    command: entrypoint.sh start-worker.sh spark://172.20.0.10:7077
+    environment:
+      SPARK_WORKER_WEBUI_PORT: 808{{ i+1 }}
+    volumes:
+      - ../scripts/spark_training/data:/scripts/spark_training/data
+    ports:
+      - "808{{ i+1 }}:808{{ i+1 }}"
+    networks:
+      - kafka-net
+    depends_on:
+      - spark-master
+  {% endfor %}
+  spark-proxy:
+    container_name: spark-proxy
+    image: "proxy:latest"
+    command: ../../entrypoint.sh
+    working_dir: /scripts/spark_training
+    volumes:
+      - ../scripts/spark_training:/scripts/spark_training
+    networks:
+      - kafka-net
+    depends_on:
+      - spark-master
+      {%+ for i in range(number_of_workers) -%}
+      - spark-worker-{{ i }}
+      {% endfor %}
+
+networks:
+  kafka-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
