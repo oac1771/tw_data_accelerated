@@ -53,4 +53,8 @@ def start_structured_stream(_):
         .option("subscribe", TOPIC).load()
     
     df = df.select(col("key").cast(StringType()).alias("key"), col("value").cast(StringType()).alias("value"), col("partition"))
-    df.printSchema()
+
+    df = df.groupBy("partition").count()
+    df = df.writeStream.outputMode("complete").option("checkpointLocation", "checkpoint/").format("console").start()
+
+    df.awaitTermination()
