@@ -34,7 +34,7 @@ services:
     ports:
       - "8080:8080"
     networks:
-      kafka-net:
+      spark-net:
         ipv4_address: 172.20.0.10
   {% for i in range(number_of_workers) %}
   spark-worker-{{ i }}:
@@ -48,7 +48,7 @@ services:
     ports:
       - "808{{ i+1 }}:808{{ i+1 }}"
     networks:
-      - kafka-net
+      - spark-net
     depends_on:
       - spark-master
   {% endfor %}
@@ -60,7 +60,7 @@ services:
     volumes:
       - ../scripts/spark_training:/scripts/spark_training
     networks:
-      - kafka-net
+      - spark-net
     depends_on:
       - spark-master
       {%+ for i in range(number_of_workers) -%}
@@ -69,6 +69,9 @@ services:
 
 networks:
   kafka-net:
+    driver: bridge
+
+  spark-net:
     driver: bridge
     ipam:
       config:
