@@ -20,5 +20,5 @@ where to get csv files: https://github.com/data-derp/exercise-co2-vs-temperature
 
 General stuff:
 
-docker exec -it << container name >> /bin/bash -c "poetry shell && bin/bash"
-start docker container from image: docker run -it --entrypoint "bin/bash" spark:latest
+docker exec -it << container name >> /bin/bash -c "poetry shell && /bin/bash"
+start docker container from image: docker run -it --entrypoint "/bin/bash" spark:latest
