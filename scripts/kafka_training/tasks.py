@@ -1,6 +1,5 @@
 from invoke import task
 from kafka import KafkaProducer, KafkaConsumer
-from datetime import datetime
 import time
 
 TOPIC = "topic"
@@ -11,8 +10,9 @@ def produce(_):
     producer = KafkaProducer(bootstrap_servers=BOOTSTRAP_SERVER)
 
     while True:
-        print("Sending data...")
-        producer.send(topic=TOPIC, value=f"{datetime.now()}".encode())
+        now = time.time()
+        print(f"Sending data: {now}")
+        producer.send(topic=TOPIC, value=f"{now}".encode())
         time.sleep(2)
 
 

@@ -17,10 +17,11 @@ def start_structured_stream(_):
 
     df = spark.readStream.format("kafka").option("kafka.bootstrap.servers", BOOTSTRAP_SERVER) \
         .option("subscribe", TOPIC).load()
-    
-    df = df.select(col("key").cast(StringType()).alias("key"), col("value").cast(StringType()).alias("value"), col("partition"))
 
-    df = df.groupBy("partition").count()
-    df = df.writeStream.outputMode("complete").option("checkpointLocation", "checkpoint/").format("console").start()
+    query = df.select(col("key").cast(StringType()).alias("key"), col("value").cast(StringType()).alias("value"), col("partition")) \
+        .writeStream \
+        .format("console") \
+        .option("checkpointLocation", "checkpoint/") \
+        .start()
 
-    df.awaitTermination()
+    query.awaitTermination()
