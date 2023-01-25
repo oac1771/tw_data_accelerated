@@ -9,7 +9,6 @@ readme = "README.md"
 python = "~3.9"
 invoke = "~1.7"
 pyspark = "~3.3"
-pandas = "~1.5"
 pyarrow = "==10.0.1"
 kafka-python = "~2"
 

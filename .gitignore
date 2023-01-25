@@ -3,4 +3,3 @@ todo.txt
 scripts/spark_training/data/temp_vs_co2/*
 scripts/spark_training/checkpoint
 docker-compose.yml
-docker/kafka_2.13-3.3.1/
