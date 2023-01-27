@@ -67,6 +67,24 @@ services:
       - spark-worker-{{ i }}
       {% endfor %}
 
+  apache-airflow:
+    container_name: apache-airflow
+    image: "proxy:latest"
+    command: ../../airflow_entrypoint.sh
+    working_dir: /scripts/spark_training
+    environment:
+      AIRFLOW__WEBSERVER__WEB_SERVER_PORT: 6060
+    volumes:
+      - ../scripts/spark_training:/scripts/spark_training
+    networks:
+      - spark-net
+    ports:
+      - "6060:6060"
+    depends_on:
+      - spark-master
+      {%+ for i in range(number_of_workers) -%}
+      - spark-worker-{{ i }}
+      {% endfor %}
 networks:
   kafka-net:
     driver: bridge
