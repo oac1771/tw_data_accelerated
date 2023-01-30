@@ -3,7 +3,7 @@ if __name__ == "__main__":
     from pyspark.sql.types import FloatType
     from pyspark.sql import functions as f
 
-    spark = SparkSession.builder.master("spark://172.20.0.10:7077").getOrCreate()
+    spark = SparkSession.builder.master("spark://spark-master:7077").getOrCreate()
     df = spark.read.format('json').load('data/students/student.json')
 
     jebbys = df.filter(f.lower(f.col("name")).contains("jebby"))

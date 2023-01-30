@@ -9,8 +9,7 @@ BOOTSTRAP_SERVER = "host.docker.internal:9092"
 @task
 def start_structured_stream(_):
 
-
-    spark = SparkSession.builder.master("spark://172.20.0.10:7077") \
+    spark = SparkSession.builder.master("spark://spark-master:7077") \
         .config("spark.jars.packages", "org.apache.spark:spark-sql-kafka-0-10_2.12:3.3.1") \
         .appName("Stream Processer").getOrCreate()
 

@@ -9,7 +9,7 @@ if __name__ == "__main__":
         FloatType,
     )
 
-    spark = SparkSession.builder.master("spark://172.20.0.10:7077").getOrCreate()
+    spark = SparkSession.builder.master("spark://spark-master:7077").getOrCreate()
     df_schema = StructType(
         [
             StructField("id", DoubleType(), True),

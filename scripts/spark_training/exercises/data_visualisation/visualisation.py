@@ -6,7 +6,7 @@ if __name__ == "__main__":
     import plotly.express as px
 
 
-    spark = SparkSession.builder.master("spark://172.20.0.10:7077").getOrCreate()
+    spark = SparkSession.builder.master("spark://spark-master:7077").getOrCreate()
 
     df = spark.read.format('csv').option('header',True).load('data/temp_vs_co2/EmissionsByCountry.csv')
 

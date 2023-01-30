@@ -29,18 +29,15 @@ services:
     container_name: spark-master
     image: "spark:latest"
     command: entrypoint.sh start-master.sh
-    environment:
-      SPARK_MASTER_HOST: 172.20.0.10
     ports:
       - "8080:8080"
     networks:
-      spark-net:
-        ipv4_address: 172.20.0.10
+      - spark-net
   {% for i in range(number_of_workers) %}
   spark-worker-{{ i }}:
     container_name: spark-worker-{{ i }}
     image: "spark:latest"
-    command: entrypoint.sh start-worker.sh spark://172.20.0.10:7077
+    command: entrypoint.sh start-worker.sh spark://spark-master:7077
     environment:
       SPARK_WORKER_WEBUI_PORT: 808{{ i+1 }}
     volumes:
@@ -69,9 +66,5 @@ services:
 networks:
   kafka-net:
     driver: bridge
-
   spark-net:
     driver: bridge
-    ipam:
-      config:
-        - subnet: 172.20.0.0/16
