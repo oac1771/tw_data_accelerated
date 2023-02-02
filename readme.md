@@ -117,3 +117,5 @@ good resource on kafka networking: https://www.confluent.io/blog/kafka-listeners
 Spark stuff:
 
 where to get data csv files: https://github.com/data-derp/exercise-co2-vs-temperature-databricks/tree/master/data-ingestion/input-data
+
+
